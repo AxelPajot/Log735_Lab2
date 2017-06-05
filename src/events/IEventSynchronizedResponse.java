@@ -8,5 +8,5 @@
 package events;
 
 public interface IEventSynchronizedResponse extends IEvent {
-
+    IEventSynchronized getOriginalSynchronizedEvent();
 }

@@ -7,10 +7,10 @@
 
 package events;
 
-public class EventSynchronizedResponseForPartOne extends EventBase implements IEventSynchronizedResponse {
+public class EventSynchronizedResponseForPartOne extends EventSynchronizedResponseBase implements IEventSynchronizedResponse {
     private static final long serialVersionUID = -3350876929169791823L;
 
-    public EventSynchronizedResponseForPartOne(String message) {
-        super(message);
+    public EventSynchronizedResponseForPartOne(String message, IEventSynchronized originalEvent) {
+        super(message, originalEvent);
     }
 }

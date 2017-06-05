@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -137,27 +138,40 @@ public class UIMainWindow extends JFrame implements IObserver {
 			ie.printStackTrace();
 		}
 		
-		if(event instanceof IEventSynchronized) {
+		if (event instanceof IEventSynchronized) {
 			if (this.synchronizedWaitClass == null) {
 				model.addElement(syncText);
-				sendSynchronizedResponse();
-			} else {
-				this.synchronizedEvents.add((EventThatShouldBeSynchronized) event);
+				sendSynchronizedResponse((IEventSynchronized) event);
 			}
-		}
-		else if (synchronizedWaitClass != null && event.getClass().isAssignableFrom(synchronizedWaitClass)) {
-			model.addElement(syncText);
-			sendSynchronizedResponse();
-		}
-		else {
+
+			this.synchronizedEvents.add((EventThatShouldBeSynchronized) event);
+		} else if (synchronizedWaitClass != null && event.getClass().isAssignableFrom(synchronizedWaitClass)) {
+			IEventSynchronized originalEvent = ((EventSynchronizedResponseBase) event).getOriginalSynchronizedEvent();
+
+			// Only respond if a corresponding synchronized event was launched
+			Iterator<IEventSynchronized> iterator = synchronizedEvents.iterator();
+			while (iterator.hasNext()) {
+				IEventSynchronized synchronizedEvent = iterator.next();
+
+				if (synchronizedEvent.getTimestamp() == originalEvent.getTimestamp()) {
+					model.addElement(syncText);
+					sendSynchronizedResponse(originalEvent);
+
+					iterator.remove();
+					break;
+				}
+			}
+		} else {
 			model.addElement(event.toString() + " - " + event.getMessage());
 		}
 	}
 
-	private void sendSynchronizedResponse() {
+	private void sendSynchronizedResponse(IEventSynchronized synchronizedEvent) {
 		if (synchronizedResponseClass != null) {
 			try {
-				Object event = synchronizedResponseClass.getConstructor(String.class).newInstance(this.getTitle());
+				Object event = synchronizedResponseClass
+								.getConstructor(String.class, IEventSynchronized.class)
+								.newInstance(this.getTitle(), synchronizedEvent);
 				eventBusConn.callEvent((IEvent) event);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
