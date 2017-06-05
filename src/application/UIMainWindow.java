@@ -45,6 +45,8 @@ public class UIMainWindow extends JFrame implements IObserver {
 	private DefaultListModel model;
 	private JScrollPane scrollPane;
 	
+	
+	
 	//Construit l'interface graphique.
 	//Ne devrait pas être modifié.
 	public UIMainWindow(IEventBusConnector eventBusConn, String name, String syncText, int delay) {
@@ -64,7 +66,7 @@ public class UIMainWindow extends JFrame implements IObserver {
 		JButton sendToPartTwo = new JButton();
 		JButton sendToPartThree = new JButton();
 		JButton sendToAll = new JButton();
-		JButton sendSynchroToAll = new JButton();
+		JButton sendSynchroToAll = new JButton();              
 		
 		scrollPane.getViewport().setView(lstResultatEvent);
 		sendToPartOne.setText("Envoyer à App Un");
@@ -96,6 +98,7 @@ public class UIMainWindow extends JFrame implements IObserver {
 		add(sendToAll);
 		add(sendSynchroToAll);
 		add(scrollPane);
+		
 	}
 	
 
@@ -116,6 +119,9 @@ public class UIMainWindow extends JFrame implements IObserver {
 		}
 		
 		if(event instanceof IEventSynchronized) {
+			model.addElement(syncText);
+		}
+		else if(event instanceof IEventRdy) {
 			model.addElement(syncText);
 		}
 		else {

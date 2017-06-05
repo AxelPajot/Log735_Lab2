@@ -20,15 +20,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import events.EventForPartTwo;
+import events.EventOneRdy;
+import events.EventThatShouldBeSynchronized;
+import events.EventTwoRdy;
 import events.IEvent;
+import events.IEventOneRdy;
+import events.IEventRdy;
+import events.IEventSynchronized;
+import events.IEventTwoRdy;
 
 
 public class EventBusConnector extends Thread implements IEventBusConnector {
 	// Liste des événements à écouter.
 	@SuppressWarnings("unchecked")
 	private List<Class> listenedEvents;
+	
 	
 	private List<IEvent> lstEventsToSend = new ArrayList<IEvent>();
 	private List<IObserver> lstObserver = new ArrayList<IObserver>();
@@ -40,7 +50,7 @@ public class EventBusConnector extends Thread implements IEventBusConnector {
 	@SuppressWarnings("unchecked")
 	public EventBusConnector(List<Class> listenedEvents, String ip, int port) {
 		this.listenedEvents = listenedEvents;
-
+		
 		try {
 			s = new Socket(ip, port);
 			oos = new ObjectOutputStream(s.getOutputStream());
@@ -116,6 +126,25 @@ public class EventBusConnector extends Thread implements IEventBusConnector {
 	{
 		lstObserver.add(o);
 	}
+	
+	
+	
+	public void fireReady(IEvent o){
+	
+		
+		if(o instanceof EventThatShouldBeSynchronized){
+			
+			callEvent(new EventOneRdy("App Un"));
+		}
+		
+		if(o instanceof IEventOneRdy){
+			
+			callEvent(new EventTwoRdy("App Un"));
+		}
+		
+		
+	}
+	
 }
 
 //Thread qui écoute les événements provenant du bus d'événements.
@@ -124,6 +153,10 @@ public class EventBusConnector extends Thread implements IEventBusConnector {
 class ReadEventFromStream extends Thread {
 	private ObjectInputStream ois;
 	private EventBusConnector eventBusConn;
+	private List<IEvent> lstEventsWaiting = new ArrayList<IEvent>();
+	private int actualState = 0;
+	
+	
 	public ReadEventFromStream(ObjectInputStream ois, EventBusConnector eventBusConn) {
 		this.ois = ois;
 		this.eventBusConn = eventBusConn;
@@ -135,8 +168,15 @@ class ReadEventFromStream extends Thread {
 				Object o = ois.readObject();
 				// Les événements reçus qui ne correspondent pas à ces types sont ignorés par
 				// le Connector.
-				if (eventBusConn.listensToEvent(o))
-					eventBusConn.notifyObservers((IEvent)o);	
+				if (eventBusConn.listensToEvent(o)){
+					eventBusConn.notifyObservers((IEvent)o);
+					eventBusConn.fireReady((IEvent)o);
+				}
+					
+				
+					
+				
+				
 			}
 			catch(Exception e) {
 				e.printStackTrace();

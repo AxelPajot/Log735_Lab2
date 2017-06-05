@@ -19,7 +19,9 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import events.IEventOneRdy;
 import events.IEventSynchronized;
+import events.IEventTwoRdy;
 import events.IPartThreeEvent;
 
 public class MainPartThree {
@@ -32,8 +34,11 @@ public class MainPartThree {
 		String ip = JOptionPane.showInputDialog("Entrez le IP du EventBus", "127.0.0.1");
 
 		List<Class> listenedEvents = new ArrayList<Class>();
-		listenedEvents.add(IPartThreeEvent.class);
-		listenedEvents.add(IEventSynchronized.class);
+		
+		//listenedEvents.add(IPartThreeEvent.class);
+		//listenedEvents.add(IEventSynchronized.class);
+		listenedEvents.add(IEventTwoRdy.class);
+		
 		EventBusConnector bus = new EventBusConnector(listenedEvents, ip, 12045);
 		UIMainWindow window = new UIMainWindow(bus, "App Trois", "Reussi!", 1);
 		bus.addObserver(window);

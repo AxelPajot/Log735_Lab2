@@ -9,6 +9,6 @@ Interface pour la classe EventSynchronized.
 ******************************************************/ 
 package events;
 
-public interface IEventSynchronized {
+public interface IEventSynchronized extends IEvent{
 
 }
