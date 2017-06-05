@@ -28,10 +28,8 @@ import events.EventOneRdy;
 import events.EventThatShouldBeSynchronized;
 import events.EventTwoRdy;
 import events.IEvent;
-import events.IEventOneRdy;
-import events.IEventRdy;
 import events.IEventSynchronized;
-import events.IEventTwoRdy;
+
 
 
 public class EventBusConnector extends Thread implements IEventBusConnector {
@@ -128,18 +126,18 @@ public class EventBusConnector extends Thread implements IEventBusConnector {
 	}
 	
 	
-	
+	//Fonction qui permet d'envoyer un évènement selon le type de celui qui vient de se produire
 	public void fireReady(IEvent o){
 	
 		
 		if(o instanceof EventThatShouldBeSynchronized){
 			
-			callEvent(new EventOneRdy("App Un"));
+			callEvent(new EventOneRdy(""));
 		}
 		
-		if(o instanceof IEventOneRdy){
+		if(o instanceof EventOneRdy){
 			
-			callEvent(new EventTwoRdy("App Un"));
+			callEvent(new EventTwoRdy(""));
 		}
 		
 		
@@ -170,6 +168,7 @@ class ReadEventFromStream extends Thread {
 				// le Connector.
 				if (eventBusConn.listensToEvent(o)){
 					eventBusConn.notifyObservers((IEvent)o);
+					//On appelle la fonction d'envoie d'évènement
 					eventBusConn.fireReady((IEvent)o);
 				}
 					

@@ -10,7 +10,7 @@ des Applications.
 ******************************************************/ 
 package events;
 
-public class EventForPartThree extends EventBase implements IPartThreeEvent {
+public class EventForPartThree extends EventBase implements IPartThreeEvent, IEventRdy {
 
 	private static final long serialVersionUID = -854026869036649703L;
 

@@ -1,5 +1,5 @@
 package events;
 
-public interface IEventOneRdy extends IEventRdy {
+public interface IEventOneRdy extends IEvent{
 
 }

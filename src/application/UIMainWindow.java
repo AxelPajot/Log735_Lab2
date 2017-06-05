@@ -107,6 +107,8 @@ public class UIMainWindow extends JFrame implements IObserver {
 	//Si l'événement est de type IEventSynchronized,
 	//affiche le texte contenu dans syncText.
 	
+	//Ajout : Un nouvelle évènement IEventRdy a été ajouté au traitement
+	
 	public void update(Object o, Object arg) {
 		
 		System.out.println("Réception de l'événement: " + arg.toString());

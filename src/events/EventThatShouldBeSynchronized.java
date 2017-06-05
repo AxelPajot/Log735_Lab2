@@ -11,7 +11,7 @@ des Applications.
 ******************************************************/ 
 package events;
 
-public class EventThatShouldBeSynchronized extends EventForAll implements IEventSynchronized {
+public class EventThatShouldBeSynchronized extends EventBase implements IEventSynchronized {
 
 	private static final long serialVersionUID = 6603201529319860113L;
 

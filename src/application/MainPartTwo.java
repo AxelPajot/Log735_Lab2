@@ -21,7 +21,9 @@ import javax.swing.JOptionPane;
 
 import events.EventOneRdy;
 import events.IEventOneRdy;
+import events.IEventRdy;
 import events.IEventSynchronized;
+import events.IEventTwoRdy;
 import events.IPartTwoEvent;
 
 public class MainPartTwo {
@@ -35,8 +37,7 @@ public class MainPartTwo {
 
 		List<Class> listenedEvents = new ArrayList<Class>();
 		
-		//listenedEvents.add(IPartTwoEvent.class);
-		//listenedEvents.add(IEventSynchronized.class);
+		listenedEvents.add(IPartTwoEvent.class);
 		listenedEvents.add(IEventOneRdy.class);
 		
 		EventBusConnector bus = new EventBusConnector(listenedEvents, ip, 12045);
